@@ -46,8 +46,6 @@ function set_away(on){
     run_mode: mode 
   }
 
-  console.log(dcb);
-
   hm.write_device(dcb);
 }
 
