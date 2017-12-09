@@ -9,9 +9,6 @@ var arg1 = '';
 var arg2 = '';
 var hm;
 
-var alexa_app = new alexa.app('heatmiser');
-
-
 function print_help(){
   console.log('Known commands are:\n');
   console.log('\t1. set_away <on/off>\n');
@@ -64,11 +61,11 @@ function parse_command()
   }
 }
 
-function initialise_heatmiser(){
+function initialise_heatmiser(success_callback, error_callback){
   hm = new heatmiser.Wifi(host, pin);
 
-  hm.on('success', dump_data);
-  hm.on('error', dump_data);
+  hm.on('success', success_callback);
+  hm.on('error', error_callback);
 
   hm.read_device(parse_command);
 }
@@ -107,12 +104,39 @@ function process_ENVS(){
 
 function cmdline(){
   process_cmdline();
-  initialise_heatmiser();
+  initialise_heatmiser(dump_data, dump_data);
 }
 
-module.exports = {cmdline: cmdline};
+//All alexa stuff below
 
-exports.heatmiser_lambda = function(event, context, callback) {
+var alexa_app = new alexa.app('heatmiser');
+
+function alexa_connected_to_heatmiser() {
+  res.say("Connected to heatmiser");
+  res.send();
+}
+      
+function alexa_unable_to_connect_to_heatmiser(){
+  res.say("Unable to connect to heatmiser");
+  res.send();
+}
+
+alexa_app.launch(function (req, res) {
+  initialise_heatmiser(alexa_connected_to_heatmiser, alexa_unable_to_connect_to_heatmiser);
+  return false;
+});
+
+//uncomment below to test locally
+//call by running command similar to  node run_heatmiser_command.js <host> <pin> <command> <arg1> <arg2>
+//module.exports = {cmdline: cmdline};
+
+//uncomment the below to test in aws lambda
+//used to expose the below function to aws lambda
+/*exports.heatmiser_lambda = function(event, context, callback) {
   process_ENVS();
-  initialise_heatmiser();
-}
+  initialise_heatmiser(dump_data, dump_data);
+}*/
+
+//uncomment the below to test via alexa
+module.exports = alexa_app;
+exports.handler = alexa_app.lambda();
