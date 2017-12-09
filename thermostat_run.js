@@ -102,14 +102,14 @@ function process_ENVS(){
   arg2 = process.env.ARG2 || arg2;
 }
 
-function lambda(){
-  process_ENVS();
-  initialise_thermostat();
-}
-
 function cmdline(){
   process_cmdline();
   initialise_thermostat();
 }
 
-module.exports = {lambda: lambda, cmdline: cmdline};
+module.exports = {cmdline: cmdline};
+
+exports.thermostat_lambda = function(event, context, callback) {
+  process_ENVS();
+  initialise_thermostat();
+}

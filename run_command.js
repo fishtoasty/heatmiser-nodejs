@@ -1,3 +1,3 @@
-var run = require('./run');
+var thermostat_run = require('./thermostat_run');
 
-run.cmdline();
+thermostat_run.cmdline();
