@@ -1,5 +1,6 @@
 var heatmiser = require('heatmiser');
-var thermostat = require('./thermostat_functions')
+var alexa = require('alexa-app');
+var heatmiser_functions = require('./heatmiser_functions')
 
 var host = 'localhost';
 var pin = 1234;
@@ -7,6 +8,8 @@ var command = 'status'
 var arg1 = '';
 var arg2 = '';
 var hm;
+
+var alexa_app = new alexa.app('heatmiser');
 
 
 function print_help(){
@@ -28,24 +31,24 @@ function parse_command()
   switch(command){
     case 'set_away':
       on = arg1;
-      dcb = thermostat.set_away(on);
+      dcb = heatmiser_functions.set_away(on);
     break;
     case 'set_keylock':
       on = arg1;
-      dcb = thermostat.set_keylock(on);
+      dcb = heatmiser_functions.set_keylock(on);
     break;
     case 'set_temperature':
       temperature = arg1;
-      dcb = thermostat.set_temperature(temperature);
+      dcb = heatmiser_functions.set_temperature(temperature);
     break;
     case 'set_hold':
       temperature = arg1;
       hours = arg2;
-      dcb = thermostat.set_hold(temperature, hours);
+      dcb = heatmiser_functions.set_hold(temperature, hours);
     break;
     case 'set_away':
       on = arg1;
-      dcb = thermostat.set_away(on);
+      dcb = heatmiser_functions.set_away(on);
     break;
     case '':
       print_help();
@@ -61,7 +64,7 @@ function parse_command()
   }
 }
 
-function initialise_thermostat(){
+function initialise_heatmiser(){
   hm = new heatmiser.Wifi(host, pin);
 
   hm.on('success', dump_data);
@@ -104,12 +107,12 @@ function process_ENVS(){
 
 function cmdline(){
   process_cmdline();
-  initialise_thermostat();
+  initialise_heatmiser();
 }
 
 module.exports = {cmdline: cmdline};
 
-exports.thermostat_lambda = function(event, context, callback) {
+exports.heatmiser_lambda = function(event, context, callback) {
   process_ENVS();
-  initialise_thermostat();
+  initialise_heatmiser();
 }
