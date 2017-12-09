@@ -4,6 +4,8 @@ var thermostat = require('./thermostat_functions')
 var host = 'localhost';
 var pin = 1234;
 var command = 'status'
+var arg1 = '';
+var arg2 = '';
 var hm;
 
 
@@ -25,24 +27,24 @@ function parse_command()
   //Read the command from the commandline
   switch(command){
     case 'set_away':
-      on = process.argv[5];
+      on = arg1;
       dcb = thermostat.set_away(on);
     break;
     case 'set_keylock':
-      on = process.argv[5];
+      on = arg1;
       dcb = thermostat.set_keylock(on);
     break;
     case 'set_temperature':
-      temperature = process.argv[5];
+      temperature = arg1;
       dcb = thermostat.set_temperature(temperature);
     break;
     case 'set_hold':
-      temperature = process.argv[5];
-      hours = process.argv[6];
+      temperature = arg1;
+      hours = arg2;
       dcb = thermostat.set_hold(temperature, hours);
     break;
     case 'set_away':
-      on = process.argv[5];
+      on = arg1;
       dcb = thermostat.set_away(on);
     break;
     case '':
@@ -81,6 +83,12 @@ function process_cmdline(){
         case 4:
           command = val;
         break;
+        case 5:
+          arg1 = val;
+        break;
+        case 6:
+          arg2 = val;
+        break;
       }
     }
   );  
@@ -90,6 +98,8 @@ function process_ENVS(){
   host = process.env.HOST || host;
   pin = process.env.PIN || pin;
   command = process.env.COMMAND || command;
+  arg1 = process.env.ARG1 || arg1;
+  arg2 = process.env.ARG2 || arg2;
 }
 
 function lambda(){
