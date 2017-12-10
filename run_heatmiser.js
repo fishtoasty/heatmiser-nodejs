@@ -45,10 +45,6 @@ function parse_command()
       hours = arg2;
       dcb = heatmiser_functions.set_hold(temperature, hours);
     break;
-    case 'set_away':
-      on = arg1;
-      dcb = heatmiser_functions.set_away(on);
-    break;
     case '':
       print_help();
     break;
@@ -113,6 +109,12 @@ function cmdline(){
   initialise_heatmiser(dump_data, dump_data);
 }
 
+function explode_response(response, thermostat_data){
+  response = response.replace('--target_temperature', thermostat_data.dcb.set_room_temp)
+  response = response.replace('--current_temperature', thermostat_data.dcb.built_in_air_temp)
+  return response;
+}
+
 //All alexa stuff below
 var alexa_instance;
 var alexa_response = '';
@@ -143,7 +145,19 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "I have set the away mode " + arg1;
+        alexa_response = "I have set the key lock " + arg1;
+        alexa_emit = ":responseReady";        
+    },
+    'SetTemperatureIntent': function () {
+        var temperature = this.event.request.intent.slots.temperature.value;
+        command = "set_temperature";
+        arg1 = temperature;
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "I have set the target temperature to --target_temperature degrees. The current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'AMAZON.HelpIntent': function () {
@@ -166,6 +180,7 @@ const handlers = {
 function alexa_success(data){
   dump_data(data);
   if(alexa_instance != null){
+    alexa_response = explode_response(alexa_response, data);
     alexa_instance.response.speak(alexa_response);
     alexa_instance.emit(alexa_emit);
   }
