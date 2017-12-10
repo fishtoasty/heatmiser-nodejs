@@ -45,6 +45,9 @@ function parse_command()
       hours = arg2;
       dcb = heatmiser_functions.set_hold(temperature, hours);
     break;
+    case 'get_status':
+      hm.read_device();
+    break;
     case '':
       print_help();
     break;
@@ -110,9 +113,27 @@ function cmdline(){
 }
 
 function explode_response(response, thermostat_data){
-  response = response.replace('--target_temperature', thermostat_data.dcb.set_room_temp)
-  response = response.replace('--current_temperature', thermostat_data.dcb.built_in_air_temp)
+  response = response.replace('--target_temperature', thermostat_data.dcb.set_room_temp);
+  response = response.replace('--current_temperature', thermostat_data.dcb.built_in_air_temp);
+  response = response.replace('--hold_time', thermostat_data.dcb.temp_hold_minutes/60.0);
   return response;
+}
+
+function alexa_success(data){
+  dump_data(data);
+  if(alexa_instance != null){
+    alexa_response = explode_response(alexa_response, data);
+    alexa_instance.response.speak(alexa_response);
+    alexa_instance.emit(alexa_emit);
+  }
+}
+
+function alexa_error(data){
+  dump_data(data);
+  if(alexa_instance != null){
+    alexa_instance.response.speak("There was an error connecting to the thermostat!");
+    alexa_instance.emit(alexa_emit);
+  }
 }
 
 //All alexa stuff below
@@ -160,6 +181,30 @@ const handlers = {
         alexa_response = "I have set the target temperature to --target_temperature degrees. The current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
+    'SetTemperatureHoldIntent': function () {
+        var temperature = this.event.request.intent.slots.temperature.value;
+        var hours = this.event.request.intent.slots.hours.value;
+        command = "set_hold";
+        arg1 = temperature;
+        arg2 = hours;
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "I have set the target temperature to --target_temperature degrees for --hold_time hours. The current temperature is --current_temperature degrees.";
+        alexa_emit = ":responseReady";        
+    },
+    'GetTemperatureIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The current temperature is --current_temperature degrees.";
+        alexa_emit = ":responseReady";        
+    },
     'AMAZON.HelpIntent': function () {
         const speechOutput = 'This is the heatmiser wifi skill.';
         const reprompt = 'Ask Ross how to use this skill if you need help.';
@@ -176,23 +221,6 @@ const handlers = {
         this.emit(':responseReady');
     }
 };
-
-function alexa_success(data){
-  dump_data(data);
-  if(alexa_instance != null){
-    alexa_response = explode_response(alexa_response, data);
-    alexa_instance.response.speak(alexa_response);
-    alexa_instance.emit(alexa_emit);
-  }
-}
-
-function alexa_error(data){
-  dump_data(data);
-  if(alexa_instance != null){
-    alexa_instance.response.speak("There was an error connecting to the thermostat!");
-    alexa_instance.emit(alexa_emit);
-  }
-}
 
 //uncomment below to test locally
 //call by running command similar to  node run_heatmiser_command.js <host> <pin> <command> <arg1> <arg2>
