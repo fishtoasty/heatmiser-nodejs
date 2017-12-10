@@ -134,6 +134,18 @@ const handlers = {
         alexa_response = "I have set the away mode " + arg1;
         alexa_emit = ":responseReady";        
     },
+    'SetKeyLockIntent': function () {
+        var onoff = this.event.request.intent.slots.onoff.value;
+        command = "set_keylock";
+        arg1 = onoff;
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "I have set the away mode " + arg1;
+        alexa_emit = ":responseReady";        
+    },
     'AMAZON.HelpIntent': function () {
         const speechOutput = 'This is the heatmiser wifi skill.';
         const reprompt = 'Ask Ross how to use this skill if you need help.';
