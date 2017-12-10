@@ -1,10 +1,10 @@
+const Alexa = require('alexa-sdk');
 var heatmiser = require('heatmiser');
-var alexa = require('alexa-app');
 var heatmiser_functions = require('./heatmiser_functions')
 
 var host = 'localhost';
 var pin = 1234;
-var command = 'status'
+var command = ''
 var arg1 = '';
 var arg2 = '';
 var hm;
@@ -18,11 +18,13 @@ function print_help(){
 }
 
 function dump_data(data){
+  console.log('Dumping data...')
   console.log(data);
 }
 
 function parse_command()
 {
+  console.log('Parsing command...')
   var dcb = null;
   //Read the command from the commandline
   switch(command){
@@ -57,11 +59,13 @@ function parse_command()
   }
 
   if(dcb != null){
+    console.log('Writing DCB to thermostat' + JSON.stringify(dcb))
     hm.write_device(dcb);
   }
 }
 
 function initialise_heatmiser(success_callback, error_callback){
+  console.log('Initialising heatmiser with host: ' + host)
   hm = new heatmiser.Wifi(host, pin);
 
   hm.on('success', success_callback);
@@ -71,6 +75,7 @@ function initialise_heatmiser(success_callback, error_callback){
 }
 
 function process_cmdline(){
+  console.log('Processing command line...')
   process.argv.forEach(
     function (val, index, array) {
       switch(index){
@@ -95,6 +100,7 @@ function process_cmdline(){
 }
 
 function process_ENVS(){
+  console.log('Processing ENVS...')
   host = process.env.HOST || host;
   pin = process.env.PIN || pin;
   command = process.env.COMMAND || command;
@@ -108,23 +114,58 @@ function cmdline(){
 }
 
 //All alexa stuff below
+var alexa_instance;
+var alexa_response = '';
+var alexa_emit = '';
 
-var alexa_app = new alexa.app('heatmiser');
+const handlers = {
+    'LaunchRequest': function () {
+    },
+    'SetAwayModeIntent': function () {
+        var onoff = this.event.request.intent.slots.onoff.value;
+        var direction = this.event.request.intent.slots.direction.value;
+        command = "set_away";
+        arg1 = (onoff === 'on' || direction === 'leaving') ? 'on' : 'off';
 
-function alexa_connected_to_heatmiser() {
-  res.say("Connected to heatmiser");
-  res.send();
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "I have set the away mode " + arg1;
+        alexa_emit = ":responseReady";        
+    },
+    'AMAZON.HelpIntent': function () {
+        const speechOutput = 'This is the heatmiser wifi skill.';
+        const reprompt = 'Ask Ross how to use this skill if you need help.';
+
+        this.response.speak(speechOutput).listen(reprompt);
+        this.emit(':responseReady');
+    },
+    'AMAZON.CancelIntent': function () {
+        this.response.speak('Request cancelled!');
+        this.emit(':responseReady');
+    },
+    'AMAZON.StopIntent': function () {
+        this.response.speak('Request stopped!');
+        this.emit(':responseReady');
+    }
+};
+
+function alexa_success(data){
+  dump_data(data);
+  if(alexa_instance != null){
+    alexa_instance.response.speak(alexa_response);
+    alexa_instance.emit(alexa_emit);
+  }
 }
-      
-function alexa_unable_to_connect_to_heatmiser(){
-  res.say("Unable to connect to heatmiser");
-  res.send();
-}
 
-alexa_app.launch(function (req, res) {
-  initialise_heatmiser(alexa_connected_to_heatmiser, alexa_unable_to_connect_to_heatmiser);
-  return false;
-});
+function alexa_error(data){
+  dump_data(data);
+  if(alexa_instance != null){
+    alexa_instance.response.speak("There was an error connecting to the thermostat!");
+    alexa_instance.emit(alexa_emit);
+  }
+}
 
 //uncomment below to test locally
 //call by running command similar to  node run_heatmiser_command.js <host> <pin> <command> <arg1> <arg2>
@@ -138,5 +179,10 @@ alexa_app.launch(function (req, res) {
 }*/
 
 //uncomment the below to test via alexa
-module.exports = alexa_app;
-exports.handler = alexa_app.lambda();
+function initialise_alexa(event, context, callback){
+  const alexa = Alexa.handler(event, context);
+  alexa.registerHandlers(handlers);
+  alexa.execute();
+}
+
+exports.handler = initialise_alexa;
