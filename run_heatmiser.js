@@ -65,12 +65,12 @@ function parse_command()
 
 function initialise_heatmiser(success_callback, error_callback){
   console.log('Initialising heatmiser with host: ' + host)
-  hm = new heatmiser.Wifi(host, pin);
+  hm = new heatmiser.Wifi(host, pin, 8068, 'PRT');
 
   hm.on('success', success_callback);
   hm.on('error', error_callback);
 
-  hm.read_device(parse_command);
+  parse_command();
 }
 
 function process_cmdline(){
@@ -115,7 +115,8 @@ function cmdline(){
 function explode_response(response, thermostat_data){
   response = response.replace('--target_temperature', thermostat_data.dcb.set_room_temp);
   response = response.replace('--current_temperature', thermostat_data.dcb.built_in_air_temp);
-  response = response.replace('--hold_time', thermostat_data.dcb.temp_hold_minutes/60.0);
+  response = response.replace('--hold_time_hours', thermostat_data.dcb.temp_hold_minutes/60.0);
+  response = response.replace('--hold_time_minutes', thermostat_data.dcb.temp_hold_minutes);
   return response;
 }
 
@@ -192,7 +193,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "I have set the target temperature to --target_temperature degrees for --hold_time hours. The current temperature is --current_temperature degrees.";
+        alexa_response = "I have set the target temperature to --target_temperature degrees for --hold_time_hours hours. The current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'GetTemperatureIntent': function () {
@@ -203,6 +204,16 @@ const handlers = {
 
         alexa_instance = this;
         alexa_response = "The current temperature is --current_temperature degrees.";
+        alexa_emit = ":responseReady";        
+    },
+    'HoldTimeRemainingIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The remaining hold time is --hold_time_minutes minutes.";
         alexa_emit = ":responseReady";        
     },
     'AMAZON.HelpIntent': function () {
