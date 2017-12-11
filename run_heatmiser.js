@@ -117,6 +117,10 @@ function explode_response(response, thermostat_data){
   response = response.replace('--current_temperature', thermostat_data.dcb.built_in_air_temp);
   response = response.replace('--hold_time_hours', thermostat_data.dcb.temp_hold_minutes/60.0);
   response = response.replace('--hold_time_minutes', thermostat_data.dcb.temp_hold_minutes);
+  response = response.replace('--away_mode_enabled', thermostat_data.dcb.away_mode ? 'on' : 'off');
+  response = response.replace('--hold_time_enabled', thermostat_data.dcb.temp_hold_minutes > 0 ? 'on' : 'off');
+  response = response.replace('--key_lock_enabled', thermostat_data.dcb.key_lock ? 'on' : 'off');
+  response = response.replace('--heating_on', thermostat_data.dcb.heating_on ? 'on' : 'off');
   return response;
 }
 
@@ -203,7 +207,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The current temperature is --current_temperature degrees.";
+        alexa_response = "The current temperature is --current_temperature degrees. The target temperature is --target_temperature.";
         alexa_emit = ":responseReady";        
     },
     'HoldTimeRemainingIntent': function () {
@@ -213,12 +217,52 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The remaining hold time is --hold_time_minutes minutes.";
+        alexa_response = "The remaining hold time is --hold_time_minutes minutes. The target temperature is --target_temperature and the current temperature is --current_temperature.";
+        alexa_emit = ":responseReady";        
+    },
+    'AwayModeEnabledIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The away mode is --away_mode_enabled.";
+        alexa_emit = ":responseReady";        
+    },
+    'HoldTimeEnabledIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The hold time is --hold_time_enabled. The hold time remaining is --hold_time_minutes minutes.";
+        alexa_emit = ":responseReady";        
+    },
+    'KeyLockEnabledIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The key lock is --key_lock_enabled.";
+        alexa_emit = ":responseReady";        
+    },
+    'HeatingOnIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The heating is --heating_on. The target temperature is --target_temperature and the current temperature is --current_temperature.";
         alexa_emit = ":responseReady";        
     },
     'AMAZON.HelpIntent': function () {
-        const speechOutput = 'This is the heatmiser wifi skill.';
-        const reprompt = 'Ask Ross how to use this skill if you need help.';
+        const speechOutput = 'This is the heatmiser wifi skill. You can ask things like, \'ask thermostat to set the temperature to 23 degrees for 2 hours\'. You can also say things like, \'ask the thermostat what the current temperature is\', and \'ask the thermostat if the key lock is enabled.\'';
+        const reprompt = 'Ask Ross how to use this skill if you need any further help.';
 
         this.response.speak(speechOutput).listen(reprompt);
         this.emit(':responseReady');
