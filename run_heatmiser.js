@@ -4,6 +4,8 @@ var heatmiser_functions = require('./heatmiser_functions')
 
 var host = 'localhost';
 var pin = 1234;
+var port = 8068;
+var model = 'PRT';
 var command = ''
 var arg1 = '';
 var arg2 = '';
@@ -65,7 +67,7 @@ function parse_command()
 
 function initialise_heatmiser(success_callback, error_callback){
   console.log('Initialising heatmiser with host: ' + host)
-  hm = new heatmiser.Wifi(host, pin, 8068, 'PRT');
+  hm = new heatmiser.Wifi(host, pin, port, model);
 
   hm.on('success', success_callback);
   hm.on('error', error_callback);
@@ -93,6 +95,12 @@ function process_cmdline(){
         case 6:
           arg2 = val;
         break;
+        case 7:
+          port = val;
+        break;
+        case 8:
+          model = val;
+        break;
       }
     }
   );  
@@ -102,6 +110,8 @@ function process_ENVS(){
   console.log('Processing ENVS...')
   host = process.env.HOST || host;
   pin = process.env.PIN || pin;
+  port = process.env.PORT || port;
+  model = process.env.MODEL || model;
   command = process.env.COMMAND || command;
   arg1 = process.env.ARG1 || arg1;
   arg2 = process.env.ARG2 || arg2;
@@ -207,7 +217,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The current temperature is --current_temperature degrees. The target temperature is --target_temperature.";
+        alexa_response = "The current temperature is --current_temperature degrees. The target temperature is --target_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'HoldTimeRemainingIntent': function () {
@@ -217,7 +227,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The remaining hold time is --hold_time_minutes minutes. The target temperature is --target_temperature and the current temperature is --current_temperature.";
+        alexa_response = "The remaining hold time is --hold_time_minutes minutes. The target temperature is --target_temperature degrees and the current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'AwayModeEnabledIntent': function () {
@@ -237,7 +247,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The hold time is --hold_time_enabled. The hold time remaining is --hold_time_minutes minutes.";
+        alexa_response = "The temperature hold is --hold_time_enabled. The hold time remaining is --hold_time_minutes minutes.";
         alexa_emit = ":responseReady";        
     },
     'KeyLockEnabledIntent': function () {
@@ -257,7 +267,17 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The heating is --heating_on. The target temperature is --target_temperature and the current temperature is --current_temperature.";
+        alexa_response = "The heating is --heating_on. The target temperature is --target_temperature degrees and the current temperature is --current_temperature degrees.";
+        alexa_emit = ":responseReady";        
+    },
+    'GetTargetTemperatureIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The target temperature is --target_temperature degrees and the current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'AMAZON.HelpIntent': function () {
