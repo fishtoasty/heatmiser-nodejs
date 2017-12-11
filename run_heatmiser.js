@@ -217,7 +217,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The current temperature is --current_temperature degrees. The target temperature is --target_temperature degrees.";
+        alexa_response = "The current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'HoldTimeRemainingIntent': function () {
@@ -267,7 +267,7 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The heating is --heating_on. The target temperature is --target_temperature degrees and the current temperature is --current_temperature degrees.";
+        alexa_response = "The heating is --heating_on.";
         alexa_emit = ":responseReady";        
     },
     'GetTargetTemperatureIntent': function () {
@@ -277,7 +277,17 @@ const handlers = {
         initialise_heatmiser(alexa_success, alexa_error);
 
         alexa_instance = this;
-        alexa_response = "The target temperature is --target_temperature degrees and the current temperature is --current_temperature degrees.";
+        alexa_response = "The target temperature is --target_temperature degrees.";
+        alexa_emit = ":responseReady";        
+    },
+    'GetStatusReportIntent': function () {
+        command = "get_status";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The heating is currenty --heating_on. The temperature hold is --hold_time_enabled and the hold time remaining is --hold_time_minutes minutes. The target temperature is --target_temperature degrees and the current temperature is --current_temperature degrees.";
         alexa_emit = ":responseReady";        
     },
     'AMAZON.HelpIntent': function () {
