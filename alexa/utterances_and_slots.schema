@@ -1,0 +1,424 @@
+{
+  "languageModel": {
+    "types": [
+      {
+        "name": "DIRECTION",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "home",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "leaving",
+              "synonyms": []
+            }
+          }
+        ]
+      },
+      {
+        "name": "ONOFF",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "on",
+              "synonyms": []
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "off",
+              "synonyms": []
+            }
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "AwayModeEnabledIntent",
+        "samples": [
+          "Is the away mode enabled",
+          "has the set away mode been enable",
+          "is the away mode on",
+          "has someone enabled the away mode",
+          "away mode status",
+          "if the away mode is enabled"
+        ],
+        "slots": []
+      },
+      {
+        "name": "GetTargetTemperatureIntent",
+        "samples": [
+          "What is the target temperature",
+          "What is the current target temperature",
+          "What is the heating trying to reach",
+          "what is the heating trying to get to",
+          "what is the target temperature set to",
+          "target temperature"
+        ],
+        "slots": []
+      },
+      {
+        "name": "GetTemperatureIntent",
+        "samples": [
+          "What temperature is it in the house",
+          "What is the temperature",
+          "What is the temperature in the house",
+          "What is the current temperature",
+          "How hot is it",
+          "How cold is it",
+          "How hot is it in the house",
+          "How cold is it in the house",
+          "The temperature",
+          "What degrees is it",
+          "The degrees",
+          "The degrees in the hous",
+          "What degrees is it in the house",
+          "temperature status",
+          "what temperature is it",
+          "what the temperature is"
+        ],
+        "slots": []
+      },
+      {
+        "name": "HeatingOnIntent",
+        "samples": [
+          "Is the heating on",
+          "Is the heating enabled",
+          "is the boiler on",
+          "are the radiators on",
+          "is the house being heated",
+          "if the heating is on"
+        ],
+        "slots": []
+      },
+      {
+        "name": "HoldTimeEnabledIntent",
+        "samples": [
+          "Has the hold time been set",
+          "Has anyone set the temperature on hold",
+          "Is the temperature being held",
+          "Is the temperature being held at the moment",
+          "Is the temperature on hold",
+          "is temperature hold on",
+          "is temperature hold enabled",
+          "hold time enabled status",
+          "if the hold time is enabled"
+        ],
+        "slots": []
+      },
+      {
+        "name": "HoldTimeRemainingIntent",
+        "samples": [
+          "How much hold time is remaining",
+          "Hold time remaining",
+          "How long until the hold time finishes",
+          "Whats the hold time",
+          "Whats left on the hold time",
+          "How many minutes are left on the hold time",
+          "How many hours are left on the hold time",
+          "hold time remaining status",
+          "what the hold time remaining is"
+        ],
+        "slots": []
+      },
+      {
+        "name": "KeyLockEnabledIntent",
+        "samples": [
+          "Has the key lock been enabled",
+          "key lock enabled",
+          "is the key lock on",
+          "has someone enabled the key lock",
+          "is the touch screen disabled",
+          "key lock status",
+          "if the key lock is enabled",
+          "if the key lock is on"
+        ],
+        "slots": []
+      },
+      {
+        "name": "SetAwayModeIntent",
+        "samples": [
+          "turn {onoff} the heating",
+          "set away mode {onoff}",
+          "I am {direction}",
+          "set the away mode {onoff}",
+          "turn {onoff} heating"
+        ],
+        "slots": [
+          {
+            "name": "onoff",
+            "type": "ONOFF",
+            "samples": [
+              "{onoff}",
+              "turn the heating {onoff}"
+            ]
+          },
+          {
+            "name": "direction",
+            "type": "DIRECTION",
+            "samples": [
+              "I am {direction}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SetKeyLockIntent",
+        "samples": [
+          "Turn key lock {onoff}",
+          "Turn keylock {onoff}",
+          "Turn the childlock {onoff}",
+          "Turn the keylock {onoff}",
+          "Turn the key lock {onoff}"
+        ],
+        "slots": [
+          {
+            "name": "onoff",
+            "type": "ONOFF",
+            "samples": [
+              "{onoff}",
+              "turn the key lock {onoff}"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SetTemperatureHoldIntent",
+        "samples": [
+          "Set the temperature to {temperature} degrees for {hours} hour",
+          "Set the temperature to {temperature} for {hours} hour",
+          "Temperature {temperature} for {hours} hour",
+          "Hold the temperature for {hours} hour at {temperature} degrees",
+          "Hold for {hours} hour at {temperature}",
+          "Hold for {hours} hour at {temperature} degrees",
+          "Set hold time to be {hours} hour at {temperature} degrees",
+          "Hold the temperature at {temperature} degrees for {hours} hour",
+          "Hold the temperature at {temperature} degrees for {hours} hours",
+          "Set hold time to be {hours} hours at {temperature} degrees",
+          "Hold for {hours} hours at {temperature} degrees",
+          "Hold for {hours} hours at {temperature}",
+          "Hold the temperature for {hours} hours at {temperature} degrees",
+          "Set the temperature to {temperature} degrees for {hours} hours",
+          "Temperature {temperature} for {hours} hours",
+          "Set the temperature to {temperature} for {hours} hours",
+          "Hold the temperature for {hours} hours at {temperature}",
+          "Hold at {temperature} degrees for {hours} hours",
+          "Hold at {temperature} degrees for {hours} hour"
+        ],
+        "slots": [
+          {
+            "name": "temperature",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{temperature} degrees",
+              "{temperature}",
+              "Set temperature to {temperature}",
+              "Set temperature at {temperature}"
+            ]
+          },
+          {
+            "name": "hours",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{hours}",
+              "{hours} hours",
+              "Hold temperature for {hours} hours",
+              "Hold temperature for {hours}",
+              "Hold temperature for {hours} hour"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "SetTemperatureIntent",
+        "samples": [
+          "Set the temperature to {temperature} degrees",
+          "Set the temperature to {temperature}",
+          "Temperature {temperature}",
+          "Set temperature {temperature}",
+          "Set temperature {temperature} degrees",
+          "Temperature {temperature} degrees"
+        ],
+        "slots": [
+          {
+            "name": "temperature",
+            "type": "AMAZON.NUMBER",
+            "samples": [
+              "{temperature}",
+              "{temperature} degrees",
+              "Set the temperature to {temperature}",
+              "Set the temperature at {temperature}"
+            ]
+          }
+        ]
+      }
+    ],
+    "invocationName": "thermostat"
+  },
+  "prompts": [
+    {
+      "id": "Elicit.Intent-SetAwayModeIntent.IntentSlot-onoff",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Would you like to turn the heating on or off?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetAwayModeIntent.IntentSlot-direction",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Are you home or leaving?"
+        },
+        {
+          "type": "PlainText",
+          "value": "Are you at home or are you leaving the house?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetKeyLockIntent.IntentSlot-onoff",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Do you want to turn the key lock on or off?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetTemperatureHoldIntent.IntentSlot-temperature",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What temperature would you like to set?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetTemperatureHoldIntent.IntentSlot-hours",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "How many hours would you like to hold the temperature for?"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-SetTemperatureIntent.IntentSlot-temperature",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "What temperature do you want to set?"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "intents": [
+      {
+        "name": "SetAwayModeIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "onoff",
+            "type": "ONOFF",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetAwayModeIntent.IntentSlot-onoff"
+            }
+          },
+          {
+            "name": "direction",
+            "type": "DIRECTION",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetAwayModeIntent.IntentSlot-direction"
+            }
+          }
+        ]
+      },
+      {
+        "name": "SetKeyLockIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "onoff",
+            "type": "ONOFF",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetKeyLockIntent.IntentSlot-onoff"
+            }
+          }
+        ]
+      },
+      {
+        "name": "SetTemperatureHoldIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "temperature",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetTemperatureHoldIntent.IntentSlot-temperature"
+            }
+          },
+          {
+            "name": "hours",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetTemperatureHoldIntent.IntentSlot-hours"
+            }
+          }
+        ]
+      },
+      {
+        "name": "SetTemperatureIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "temperature",
+            "type": "AMAZON.NUMBER",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-SetTemperatureIntent.IntentSlot-temperature"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
