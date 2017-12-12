@@ -66,6 +66,26 @@
         "slots": []
       },
       {
+        "name": "GetStatusReportIntent",
+        "samples": [
+          "what is the current status",
+          "what is the current state of play",
+          "what is the status",
+          "to give me a status update",
+          "status update",
+          "status report",
+          "to give me a status report",
+          "what is the current status report",
+          "to update me",
+          "to update me on the current state of play",
+          "to give me the status report",
+          "to update me on what the status is",
+          "to update me on the current status",
+          "to update me on the current status report"
+        ],
+        "slots": []
+      },
+      {
         "name": "GetTargetTemperatureIntent",
         "samples": [
           "What is the target temperature",
