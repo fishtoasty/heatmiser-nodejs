@@ -24,6 +24,25 @@ function dump_data(data){
   console.log(data);
 }
 
+function set_heating_on(thermostat_data)
+{
+  if (!thermostat_data.dcb.heating_on){
+    arg1 = Math.floor(thermostat_data.dcb.built_in_air_temp + 2.0);
+    if(thermostat_data.dcb.temp_hold_minutes < 30){
+      arg2 = 2;
+    }
+    else{
+      arg2 = thermostat_data.dcb.temp_hold_minutes/60.0;
+    }
+    command = 'set_hold';
+  }
+  else{
+    alexa_response = "The heating is already --heating_on. The target temperature is --target_temperature and the hold time remaining is --hold_time_minutes minutes.";
+    command = 'get_status';
+  }
+  parse_command();
+}
+
 function parse_command()
 {
   console.log('Parsing command...')
@@ -49,6 +68,9 @@ function parse_command()
     break;
     case 'get_status':
       hm.read_device();
+    break;
+    case 'heating_on':
+      hm.read_device(set_heating_on);
     break;
     case '':
       print_help();
@@ -208,6 +230,16 @@ const handlers = {
 
         alexa_instance = this;
         alexa_response = "I have set the target temperature to --target_temperature degrees for --hold_time_hours hours. The current temperature is --current_temperature degrees.";
+        alexa_emit = ":responseReady";        
+    },
+    'SetHeatingOnIntent': function () {
+        command = "heating_on";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The heating is now --heating_on. I have set the target temperature to --target_temperature degrees for --hold_time_minutes minutes.";
         alexa_emit = ":responseReady";        
     },
     'GetTemperatureIntent': function () {

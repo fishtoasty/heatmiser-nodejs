@@ -203,6 +203,20 @@
         ]
       },
       {
+        "name": "SetHeatingOnIntent",
+        "samples": [
+          "set the heating on",
+          "turn the heating on",
+          "switch the heating on",
+          "its cold",
+          "its too cold",
+          "turn the radiators on",
+          "make it warmer",
+          "put the heating on"
+        ],
+        "slots": []
+      },
+      {
         "name": "SetKeyLockIntent",
         "samples": [
           "Turn key lock {onoff}",
@@ -243,7 +257,11 @@
           "Set the temperature to {temperature} for {hours} hours",
           "Hold the temperature for {hours} hours at {temperature}",
           "Hold at {temperature} degrees for {hours} hours",
-          "Hold at {temperature} degrees for {hours} hour"
+          "Hold at {temperature} degrees for {hours} hour",
+          "Put the temperature at {temperature} degrees for {hours} hour",
+          "Put the temperature at {temperature} degrees for {hours} hours",
+          "Set the temperature at {temperature} degrees for {hours} hour",
+          "Set the temperature at {temperature} degrees for {hours} hours"
         ],
         "slots": [
           {

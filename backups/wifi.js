@@ -130,10 +130,14 @@ Wifi.prototype.command = function(operation, data, callback) {
     var obj = parse_response(data);
     this.event_obj = obj;
     this.model = obj.dcb.model;
-    this.event_to_emit = 'success';
     // if callback is set don't emit an event
-    if (typeof callback !== 'undefined') {
+    if (typeof callback !== 'undefined'){
+      this.event_to_emit = 'ignore';
       callback(obj);
+    }
+    else{
+      //only emit success on the last time through here i.e. callback === 'undefined'
+      this.event_to_emit = 'success';
     }
     client.end();
   }.bind(this));
@@ -149,7 +153,9 @@ Wifi.prototype.command = function(operation, data, callback) {
   }.bind(this));
   client.on('end', function(){
     console.log('Disconnected from thermostat...');
-    this.emit(this.event_to_emit, this.event_obj);
+    if(this.event_to_emit !== 'ignore'){
+      this.emit(this.event_to_emit, this.event_obj);
+    }
   }.bind(this));
 }
 
