@@ -37,7 +37,7 @@ function set_heating_on(thermostat_data)
     command = 'set_hold';
   }
   else{
-    alexa_response = "The heating is already --heating_on. The target temperature is --target_temperature and the hold time remaining is --hold_time_minutes minutes.";
+    alexa_response = "The heating is already --heating_on. The target temperature is --target_temperature degrees and the hold time remaining is --hold_time_minutes minutes.";
     command = 'get_status';
   }
   parse_command();
