@@ -1,5 +1,5 @@
 function safeguard_hours(hours){
-  if (hours < 0.5){
+  if (hours < 0){
       hours = 0.5;
   }
   else if (hours > 24){

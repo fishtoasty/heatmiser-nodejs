@@ -2,3 +2,4 @@ package_up.sh
 *.zip
 run_heatmiser_command.js
 backups/wifi.js
+examples/example_dcb.txt

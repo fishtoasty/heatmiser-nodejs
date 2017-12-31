@@ -26,7 +26,11 @@ function dump_data(data){
 
 function set_heating_on(thermostat_data)
 {
-  if (!thermostat_data.dcb.heating_on){
+  if (thermostat_data.dcb.heating_on){
+    alexa_response = "The heating is already --heating_on. The target temperature is --target_temperature degrees and the hold time remaining is --hold_time_minutes minutes.";
+    command = 'get_status';
+  }
+  else{
     arg1 = Math.floor(thermostat_data.dcb.built_in_air_temp + 2.0);
     if(thermostat_data.dcb.temp_hold_minutes < 30){
       arg2 = 2;
@@ -36,8 +40,19 @@ function set_heating_on(thermostat_data)
     }
     command = 'set_hold';
   }
+  parse_command();
+}
+
+function set_heating_off(thermostat_data)
+{
+  if (thermostat_data.dcb.heating_on){
+    var hours = 0;
+    arg1 = arg1 = Math.ceil(thermostat_data.dcb.built_in_air_temp - 2.0);
+    arg2 = hours;
+    command = 'set_hold';
+  }
   else{
-    alexa_response = "The heating is already --heating_on. The target temperature is --target_temperature degrees and the hold time remaining is --hold_time_minutes minutes.";
+    alexa_response = "The heating is already --heating_on.";
     command = 'get_status';
   }
   parse_command();
@@ -71,6 +86,9 @@ function parse_command()
     break;
     case 'heating_on':
       hm.read_device(set_heating_on);
+    break;
+    case 'heating_off':
+      hm.read_device(set_heating_off);
     break;
     case '':
       print_help();
@@ -240,6 +258,16 @@ const handlers = {
 
         alexa_instance = this;
         alexa_response = "The heating is now --heating_on. I have set the target temperature to --target_temperature degrees for --hold_time_minutes minutes.";
+        alexa_emit = ":responseReady";        
+    },
+    'SetHeatingOffIntent': function () {
+        command = "heating_off";
+
+        process_ENVS();
+        initialise_heatmiser(alexa_success, alexa_error);
+
+        alexa_instance = this;
+        alexa_response = "The heating is now --heating_on.";
         alexa_emit = ":responseReady";        
     },
     'GetTemperatureIntent': function () {
